@@ -5,6 +5,13 @@ function load_env_vars() {
   if [ -f .env ]; then
     # shellcheck disable=SC2046
     export echo $(sed <.env 's/#.*//g' | xargs | envsubst)
+
+    # Check if required variables are set and not equal to default values
+    if [ "$NICKNAME" = "your_nickname" ] || [ "$XCODE_PROJECT_NAME" = "your_xcode_project_name" ] || [ "$XCODE_MAIN_FOLDER" = "your_xcode_main_folder" ] || [ "$XCODE_UNIT_TEST_FOLDER" = "your_xcode_unit_test_folder" ]; then
+      echo "Error: Required environment variables are set to default values."
+      echo "Please update NICKNAME, XCODE_PROJECT_NAME, XCODE_MAIN_FOLDER, and XCODE_UNIT_TEST_FOLDER in the .env file with appropriate values."
+      exit 1
+    fi
   fi
 }
 
@@ -59,7 +66,7 @@ function translate_file_name() {
 #   $1 - question_id: The unique number of the problem.
 #   $2 - question_name: The name or title of the problem.
 #   $3 - question_platform: The URL to the problem.
-#   $4 - ps_site_name: The name of the problem-solving site or platform.
+#   $4 - ps_platform: The name of the problem-solving platform.
 #   $5 - swift_code: The Swift code to solve the problem.
 #
 # Returns:
@@ -68,7 +75,7 @@ function make_solution_code() {
   local question_id=$1
   local question_name=$2
   local question_platform=$3
-  local ps_site_name=$4
+  local ps_platform=$4
   local swift_code=$5
   local nickname
   if [ -n "$NICKNAME" ] && [ -f "$NICKNAME" ]; then
@@ -89,7 +96,7 @@ function make_solution_code() {
 
 import Foundation
 
-final class $ps_site_name$question_id {
+final class $ps_platform$question_id {
   $swift_code
 }
 
@@ -98,16 +105,33 @@ EOF
   echo "$content"
 }
 
+# Save the Swift file
+function save_swift_file() {
+  local file_name="$1"
+  local difficulty="$2"
+  local ps_platform="$3"
+  local content="$4"
+  local DIR
+
+  DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+  local solution_folder="$DIR/$XCODE_MAIN_FOLDER/$ps_platform/$difficulty"
+  mkdir -p "$solution_folder"
+
+  local solution_file="$solution_folder/$file_name.swift"
+  echo "$content" >"$solution_file"
+  echo "Swift 파일 생성 완료: $file_name"
+}
+
 # Add the Swift file to Xcode project
 function add_to_xcode_project() {
-  local solution_file="$1"
-  local ps_folder_name="$2"
+  local solution_file="$1.swift"
+  local ps_platform="$2"
   local difficulty="$3"
 
   if [ -n "$difficulty" ]; then
-    ./add_to_xcode_project.rb "$solution_file" "$ps_folder_name" "$difficulty"
+    ./add_to_xcode_project.rb "$solution_file" "$ps_platform" "$difficulty"
   else
-    ./add_to_xcode_project.rb "$solution_file" "$ps_folder_name"
+    ./add_to_xcode_project.rb "$solution_file" "$ps_platform"
   fi
   echo "Adding Swift file to Xcode project completed: $solution_file"
 }
