@@ -12,15 +12,15 @@ function load_env_vars() {
 function check_command() {
   local command="$1"
   if ! command -v "$command" &>/dev/null; then
-    echo "$command 명령어가 설치되어 있지 않습니다."
-    read -r -p "$command을 설치하시겠습니까? (Y/n): " install_command
+    echo "The $command command is not installed."
+    read -r -p "Do you want to install $command? (Y/n): " install_command
     case "$install_command" in
     [nN] | [nN][oO])
-      echo "$command 설치가 거부되었습니다. 스크립트를 종료합니다."
+      echo "Installation of $command has been rejected. Exiting the script."
       exit 1
       ;;
     *)
-      echo "$command 설치를 진행합니다..."
+      echo "Proceeding with the installation of $command..."
       brew install "$command"
       ;;
     esac
@@ -64,9 +64,5 @@ function add_to_xcode_project() {
   else
     ./add_to_xcode_project.rb "$solution_file" "$ps_folder_name"
   fi
-  echo "Xcode 프로젝트에 Swift 파일 추가 완료: $solution_file"
+  echo "Adding Swift file to Xcode project completed: $solution_file"
 }
-
-echo "$DEEPL_API_KEY_PATH"
-load_env_vars
-echo "$DEEPL_API_KEY_PATH"
