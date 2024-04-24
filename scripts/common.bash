@@ -78,7 +78,7 @@ function make_solution_code() {
   local ps_platform=$4
   local swift_code=$5
   local nickname
-  if [ -n "$NICKNAME" ] && [ -f "$NICKNAME" ]; then
+  if [ -n "$NICKNAME" ]; then
     nickname=$NICKNAME
   else
     nickname=Unknown
@@ -112,7 +112,7 @@ function make_unit_test_code() {
   local file_name="${ps_platform}${question_id}Tests"
   local content
   local nickname
-  if [ -n "$NICKNAME" ] && [ -f "$NICKNAME" ]; then
+  if [ -n "$NICKNAME" ]; then
     nickname=$NICKNAME
   else
     nickname=Unknown
