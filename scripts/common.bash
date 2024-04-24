@@ -155,9 +155,9 @@ function save_swift_file() {
 
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
   if [ -n "$difficulty" ]; then
-    solution_folder="$DIR/../$path/$ps_platform/$difficulty"
+    solution_folder="$DIR/../$XCODE_PROJECT_NAME/$path/$ps_platform/$difficulty"
   else
-    solution_folder="$DIR/../$path/$ps_platform"
+    solution_folder="$DIR/../$XCODE_PROJECT_NAME/$path/$ps_platform"
   fi
   mkdir -p "$solution_folder"
 
@@ -174,9 +174,13 @@ function add_to_xcode_project() {
   local difficulty="$4"
 
   if [ -n "$difficulty" ]; then
-    ./scripts/add_to_xcode_project.rb "$XCODE_PROJECT_NAME" "$target_name" "$solution_file_name" "$ps_platform" "$difficulty"
+    ./scripts/add_to_xcode_project.rb "$XCODE_PROJECT_NAME" "$target_name" "$ps_platform/$difficulty/$solution_file_name" "$ps_platform" "$difficulty"
   else
-    ./scripts/add_to_xcode_project.rb "$XCODE_PROJECT_NAME" "$target_name" "$solution_file_name" "$ps_platform"
+    ./scripts/add_to_xcode_project.rb "$XCODE_PROJECT_NAME" "$target_name" "$ps_platform/$solution_file_name" "$ps_platform"
   fi
   echo "Adding Swift file to Xcode project completed: $solution_file_name"
+}
+
+function open_xcode_project() {
+  open "$XCODE_PROJECT_NAME/$XCODE_PROJECT_NAME.xcodeproj"
 }

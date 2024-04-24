@@ -44,7 +44,7 @@ function main() {
   create_swift_file "$response"
 
   echo "Opening Xcode project..."
-  open "$XCODE_PROJECT_NAME.xcodeproj"
+  open_xcode_project
 }
 
 load_env_vars

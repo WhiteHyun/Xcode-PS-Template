@@ -5,12 +5,12 @@ require 'xcodeproj'
 # Get the relative path of the Swift file to be added and its difficulty level
 project_name = ARGV[0]
 target_name = ARGV[1]
-swift_file_name = ARGV[2]
+swift_file_path = ARGV[2]
 ps_platform = ARGV[3]
 difficulty = ARGV[4] || 'Unknown'  # Use 'Unknown' as the default value if difficulty is not provided
 
 # Relative path of the Xcode project file
-project_path = "#{project_name}.xcodeproj"
+project_path = "#{project_name}/#{project_name}.xcodeproj"
 
 # Open the Xcode project
 project = Xcodeproj::Project.open(project_path)
@@ -39,7 +39,7 @@ else
 end
 
 # Add the new file to the file group
-file_ref = file_group.new_reference(swift_file_name)
+file_ref = file_group.new_reference(swift_file_path)
 target.add_file_references([file_ref])
 
 # Save the project
