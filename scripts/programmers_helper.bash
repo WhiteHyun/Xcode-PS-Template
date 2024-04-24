@@ -8,7 +8,7 @@ function extract_problem_number() {
   elif [[ $problem_info =~ ^https://school.programmers.co.kr/learn/courses/30/lessons/[0-9]+ ]]; then
     echo "$problem_info" | sed -n "s/^.*https:\/\/school\.programmers\.co\.kr\/learn\/courses\/30\/lessons\/\([0-9]*\).*$/\1/p"
   else
-    echo "문제 번호 또는 링크가 필요합니다!" >&2
+    echo "Problem number or link is required!" >&2
     return 1
   fi
 }

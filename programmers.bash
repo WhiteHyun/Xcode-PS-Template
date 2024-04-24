@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-source common.bash
-source programmers_helper.bash
+source scripts/common.bash
+source scripts/programmers_helper.bash
 
 # 메인 함수
 function main() {
@@ -9,7 +9,7 @@ function main() {
     local problem_info
 
     if [ "$#" -eq 0 ]; then
-        echo -n "프로그래머스 문제 번호 또는 URL: "
+        echo -n "Enter the Programmers problem number or URL: "
         read -r problem_info
     elif [ "$#" -eq 1 ]; then
         problem_info="$1"
@@ -20,7 +20,7 @@ function main() {
 
     problem_number=$(extract_problem_number "$problem_info")
     if [ -z "$problem_number" ]; then
-        echo "문제 번호를 찾을 수가 없습니다"
+        echo "Problem number not found."
         exit 1
     fi
 
@@ -28,7 +28,7 @@ function main() {
 
     create_swift_file "$problem_number"
 
-    echo "Xcode 프로젝트 여는 중..."
+    echo "Opening Xcode project..."
     open "$XCODE_PROJECT_NAME.xcodeproj"
 }
 
