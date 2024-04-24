@@ -30,6 +30,7 @@ function make_query() {
 
 # Send a POST request to the LeetCode GraphQL API
 function request() {
+  local query="$1"
   local response
   response=$(curl -s -X POST -H "Content-Type: application/json" --data "$query" https://leetcode.com/graphql)
   echo -E "$response"
