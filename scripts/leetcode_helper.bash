@@ -52,19 +52,19 @@ function create_swift_file() {
   title=$(echo -E "$json_data" | jq -r '.data.question.title')
   title_slug=$(echo -E "$json_data" | jq -r '.data.question.titleSlug')
 
-  # Generate code snippet
+  # Generate the code snippet
   swift_code=$(create_swift_code_snippet "$json_data" "$question_id")
   file_name="${question_id}. ${title}"
 
-  # Generate whole Swift code
+  # Generate the entire Swift code
   content=$(make_solution_code "$question_id" "$title" "https://leetcode.com/problems/$title_slug/description/" "LeetCode" "$swift_code")
   unit_test_content=$(make_unit_test_code "$question_id" "LeetCode")
 
-  # link to xcodeproj
+  # Link to the xcodeproj
   add_to_xcode_project "$XCODE_MAIN_FOLDER" "$file_name" "LeetCode" "$difficulty"
   add_to_xcode_project "$XCODE_UNIT_TEST_FOLDER" "LeetCode${question_id}Tests" "LeetCode"
 
-  # save file
+  # Save the files
   save_swift_file "$file_name" "LeetCode" "$XCODE_MAIN_FOLDER" "$content" "$difficulty"
   save_swift_file "LeetCode${question_id}Tests" "LeetCode" "$XCODE_UNIT_TEST_FOLDER" "$unit_test_content"
 

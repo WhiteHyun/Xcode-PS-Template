@@ -30,7 +30,7 @@ function create_swift_code_snippet() {
   echo "$swift_code"
 }
 
-# 프로그래머스 문제 풀이 파일 생성 함수
+# Function to create a solution file for a Programmers problem
 function create_swift_file() {
   local problem_number=$1
   local problem_name
@@ -40,25 +40,25 @@ function create_swift_file() {
   local content
   local unit_test_content
 
-  # Generate code snippets and get problem name
+  # Generate code snippets and get the problem name
   IFS=$'\n' read -r -d '' problem_name swift_code < <(create_swift_code_snippet "$problem_link")
 
-  # Translate Korean to English if API key was provided.
+  # Translate Korean to English if the API key is provided.
   if [ -n "$DEEPL_API_KEY_PATH" ] && [ -f "$DEEPL_API_KEY_PATH" ]; then
     problem_name=$(translate_file_name "$problem_name")
   fi
 
   file_name="$problem_number. $problem_name"
 
-  # Generate whole Swift code
+  # Generate the entire Swift code
   content=$(make_solution_code "$problem_number" "$problem_name" "$problem_link" "Programmers" "$swift_code")
   unit_test_content=$(make_unit_test_code "$problem_number" "Programmers")
 
-  # link to xcodeproj
+  # Link to the xcodeproj
   add_to_xcode_project "$XCODE_MAIN_FOLDER" "$file_name" "Programmers"
   add_to_xcode_project "$XCODE_UNIT_TEST_FOLDER" "Programmers${problem_number}Tests" "Programmers"
 
-  # save file
+  # Save the files
   save_swift_file "$file_name" "Programmers" "$XCODE_MAIN_FOLDER" "$content"
   save_swift_file "Programmers${problem_number}Tests" "Programmers" "$XCODE_UNIT_TEST_FOLDER" "$unit_test_content"
 }
