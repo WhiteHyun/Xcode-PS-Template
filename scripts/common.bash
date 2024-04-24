@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Load environment variables from .env file
 function load_env_vars() {
@@ -65,7 +65,7 @@ function translate_file_name() {
 # Arguments:
 #   $1 - question_id: The unique number of the problem.
 #   $2 - question_name: The name or title of the problem.
-#   $3 - question_platform: The URL to the problem.
+#   $3 - question_url: The URL to the problem.
 #   $4 - ps_platform: The name of the problem-solving platform.
 #   $5 - swift_code: The Swift code to solve the problem.
 #
@@ -74,7 +74,7 @@ function translate_file_name() {
 function make_solution_code() {
   local question_id=$1
   local question_name=$2
-  local question_platform=$3
+  local question_url=$3
   local ps_platform=$4
   local swift_code=$5
   local nickname
@@ -88,7 +88,7 @@ function make_solution_code() {
     cat <<EOF
 //
 //  $question_id. $question_name.swift
-//  $question_platform
+//  $question_url
 //  Algorithm
 //
 //  Created by $nickname on $(date "+%Y/%m/%d").
@@ -105,16 +105,60 @@ EOF
   echo "$content"
 }
 
+# Generate and save the Swift test file
+function make_unit_test_code() {
+  local question_id="$1"
+  local ps_platform="$2"
+  local file_name="${ps_platform}${question_id}Tests"
+  local content
+  local nickname
+  if [ -n "$NICKNAME" ] && [ -f "$NICKNAME" ]; then
+    nickname=$NICKNAME
+  else
+    nickname=Unknown
+  fi
+
+  content=$(
+    cat <<EOF
+//
+//  $file_name.swift
+//  AlgorithmTests
+//
+//  Created by $nickname on $(date "+%Y/%m/%d").
+//
+
+import XCTest
+
+final class $file_name: XCTestCase {
+  private let problem = ${ps_platform}${question_id}()
+  func testExample1() {
+    let result = problem.solution(<#Insert Input#>)
+    XCTAssertTrue(result == <#Insert predicted value#>)
+  }
+}
+
+EOF
+  )
+
+  echo "$content"
+}
+
 # Save the Swift file
 function save_swift_file() {
   local file_name="$1"
-  local difficulty="$2"
-  local ps_platform="$3"
+  local ps_platform="$2"
+  local path="$3"
   local content="$4"
+  local difficulty="$5"
+  local solution_folder
   local DIR
 
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-  local solution_folder="$DIR/$XCODE_MAIN_FOLDER/$ps_platform/$difficulty"
+  if [ -n "$difficulty" ]; then
+    solution_folder="$DIR/$path/$ps_platform/$difficulty"
+  else
+    solution_folder="$DIR/$path/$ps_platform"
+  fi
   mkdir -p "$solution_folder"
 
   local solution_file="$solution_folder/$file_name.swift"
@@ -124,14 +168,15 @@ function save_swift_file() {
 
 # Add the Swift file to Xcode project
 function add_to_xcode_project() {
-  local solution_file="$1.swift"
-  local ps_platform="$2"
-  local difficulty="$3"
+  local target_name="$1"
+  local solution_file_name="$2.swift"
+  local ps_platform="$3"
+  local difficulty="$4"
 
   if [ -n "$difficulty" ]; then
-    ./add_to_xcode_project.rb "$solution_file" "$ps_platform" "$difficulty"
+    ./add_to_xcode_project.rb "$XCODE_PROJECT_NAME" "$target_name" "$solution_file_name" "$ps_platform" "$difficulty"
   else
-    ./add_to_xcode_project.rb "$solution_file" "$ps_platform"
+    ./add_to_xcode_project.rb "$XCODE_PROJECT_NAME" "$target_name" "$solution_file_name" "$ps_platform"
   fi
-  echo "Adding Swift file to Xcode project completed: $solution_file"
+  echo "Adding Swift file to Xcode project completed: $solution_file_name"
 }

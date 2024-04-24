@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source scripts/common.bash
 source scripts/leetcode_helper.bash
@@ -44,7 +44,7 @@ function main() {
   create_swift_file "$response"
 
   echo "Opening Xcode project..."
-  open "$XCODE_MAIN_FOLDER.xcodeproj"
+  open "$XCODE_PROJECT_NAME.xcodeproj"
 }
 
 load_env_vars

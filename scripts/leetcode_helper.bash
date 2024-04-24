@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Extract the title-slug from the LeetCode URL
 function extract_problem_name() {
@@ -36,7 +36,7 @@ function request() {
 }
 
 # Create a Swift file for the LeetCode problem
-create_swift_file() {
+function create_swift_file() {
   local json_data="$1"
   local question_id
   local difficulty
@@ -45,6 +45,7 @@ create_swift_file() {
   local swift_code
   local file_name
   local content
+  local unit_test_content
 
   question_id=$(echo -E "$json_data" | jq -r '.data.question.questionId')
   difficulty=$(echo -E "$json_data" | jq -r '.data.question.difficulty')
@@ -55,12 +56,16 @@ create_swift_file() {
   swift_code=$(create_swift_code_snippet "$json_data" "$question_id")
   file_name="${question_id}. ${title}"
 
-  # Generate whole swift code
+  # Generate whole Swift code
   content=$(make_solution_code "$question_id" "$title" "https://leetcode.com/problems/$title_slug/description/" "LeetCode" "$swift_code")
-
-  # save file
-  save_swift_file "$file_name" "$difficulty" "LeetCode" "$content"
+  unit_test_content=$(make_unit_test_code "$question_id" "LeetCode")
 
   # link to xcodeproj
-  add_to_xcode_project "$file_name" "LeetCode" "$difficulty"
+  add_to_xcode_project "$XCODE_MAIN_FOLDER" "$file_name" "LeetCode" "$difficulty"
+  add_to_xcode_project "$XCODE_UNIT_TEST_FOLDER" "LeetCode${question_id}Tests" "LeetCode"
+
+  # save file
+  save_swift_file "$file_name" "LeetCode" "$XCODE_MAIN_FOLDER" "$content" "$difficulty"
+  save_swift_file "LeetCode${question_id}Tests" "LeetCode" "$XCODE_UNIT_TEST_FOLDER" "$unit_test_content"
+
 }
