@@ -61,14 +61,15 @@ function create_swift_file() {
   content=$(make_solution_code "$question_id" "$title" "https://leetcode.com/problems/$title_slug/description/" "LeetCode" "$swift_code")
   unit_test_content=$(make_unit_test_code "$question_id" "LeetCode")
 
-  # Link to the xcodeproj
-  add_to_xcode_project "$XCODE_MAIN_FOLDER" "$file_name" "LeetCode" "$difficulty"
-  if [ -n "$XCODE_UNIT_TEST_FOLDER" ] && [ -f "$XCODE_UNIT_TEST_FOLDER" ]; then
-    add_to_xcode_project "$XCODE_UNIT_TEST_FOLDER" "LeetCode${question_id}Tests" "LeetCode"
-  fi
   # Save the files
   save_swift_file "$file_name" "LeetCode" "$XCODE_MAIN_FOLDER" "$content" "$difficulty"
-  if [ -n "$XCODE_UNIT_TEST_FOLDER" ] && [ -f "$XCODE_UNIT_TEST_FOLDER" ]; then
+  if [ -n "$XCODE_UNIT_TEST_FOLDER" ]; then
     save_swift_file "LeetCode${question_id}Tests" "LeetCode" "$XCODE_UNIT_TEST_FOLDER" "$unit_test_content"
+  fi
+
+  # Link to the xcodeproj
+  add_to_xcode_project "$XCODE_MAIN_FOLDER" "$file_name" "LeetCode" "$difficulty"
+  if [ -n "$XCODE_UNIT_TEST_FOLDER" ]; then
+    add_to_xcode_project "$XCODE_UNIT_TEST_FOLDER" "LeetCode${question_id}Tests" "LeetCode"
   fi
 }

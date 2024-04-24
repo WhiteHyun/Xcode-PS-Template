@@ -54,15 +54,15 @@ function create_swift_file() {
   content=$(make_solution_code "$problem_number" "$problem_name" "$problem_link" "Programmers" "$swift_code")
   unit_test_content=$(make_unit_test_code "$problem_number" "Programmers")
 
-  # Link to the xcodeproj
-  add_to_xcode_project "$XCODE_MAIN_FOLDER" "$file_name" "Programmers"
-  if [ -n "$XCODE_UNIT_TEST_FOLDER" ] && [ -f "$XCODE_UNIT_TEST_FOLDER" ]; then
-    add_to_xcode_project "$XCODE_UNIT_TEST_FOLDER" "Programmers${problem_number}Tests" "Programmers"
-  fi
-
   # Save the files
   save_swift_file "$file_name" "Programmers" "$XCODE_MAIN_FOLDER" "$content"
-  if [ -n "$XCODE_UNIT_TEST_FOLDER" ] && [ -f "$XCODE_UNIT_TEST_FOLDER" ]; then
+  if [ -n "$XCODE_UNIT_TEST_FOLDER" ]; then
     save_swift_file "Programmers${problem_number}Tests" "Programmers" "$XCODE_UNIT_TEST_FOLDER" "$unit_test_content"
+  fi
+
+  # Link to the xcodeproj
+  add_to_xcode_project "$XCODE_MAIN_FOLDER" "$file_name" "Programmers"
+  if [ -n "$XCODE_UNIT_TEST_FOLDER" ]; then
+    add_to_xcode_project "$XCODE_UNIT_TEST_FOLDER" "Programmers${problem_number}Tests" "Programmers"
   fi
 }
