@@ -63,10 +63,12 @@ function create_swift_file() {
 
   # Link to the xcodeproj
   add_to_xcode_project "$XCODE_MAIN_FOLDER" "$file_name" "LeetCode" "$difficulty"
-  add_to_xcode_project "$XCODE_UNIT_TEST_FOLDER" "LeetCode${question_id}Tests" "LeetCode"
-
+  if [ -n "$XCODE_UNIT_TEST_FOLDER" ] && [ -f "$XCODE_UNIT_TEST_FOLDER" ]; then
+    add_to_xcode_project "$XCODE_UNIT_TEST_FOLDER" "LeetCode${question_id}Tests" "LeetCode"
+  fi
   # Save the files
   save_swift_file "$file_name" "LeetCode" "$XCODE_MAIN_FOLDER" "$content" "$difficulty"
-  save_swift_file "LeetCode${question_id}Tests" "LeetCode" "$XCODE_UNIT_TEST_FOLDER" "$unit_test_content"
-
+  if [ -n "$XCODE_UNIT_TEST_FOLDER" ] && [ -f "$XCODE_UNIT_TEST_FOLDER" ]; then
+    save_swift_file "LeetCode${question_id}Tests" "LeetCode" "$XCODE_UNIT_TEST_FOLDER" "$unit_test_content"
+  fi
 }
