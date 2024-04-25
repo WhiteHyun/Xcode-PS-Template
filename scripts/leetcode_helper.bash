@@ -20,7 +20,7 @@ function create_swift_code_snippet() {
 function make_query() {
   local question_slug=$1
   local query='{
-  "query": "query selectProblem($titleSlug: String!) { question(titleSlug: $titleSlug) { questionId title titleSlug difficulty exampleTestcases codeSnippets { lang langSlug code } } }",
+  "query": "query selectProblem($titleSlug: String!) { question(titleSlug: $titleSlug) { questionFrontendId title titleSlug difficulty exampleTestcases codeSnippets { lang langSlug code } } }",
   "variables": {
     "titleSlug": "'"$question_slug"'"
   }
@@ -48,7 +48,7 @@ function create_swift_file() {
   local content
   local unit_test_content
 
-  question_id=$(echo -E "$json_data" | jq -r '.data.question.questionId')
+  question_id=$(echo -E "$json_data" | jq -r '.data.question.questionFrontendId')
   difficulty=$(echo -E "$json_data" | jq -r '.data.question.difficulty')
   title=$(echo -E "$json_data" | jq -r '.data.question.title')
   title_slug=$(echo -E "$json_data" | jq -r '.data.question.titleSlug')
