@@ -3,7 +3,7 @@
 # Extract the title-slug from the LeetCode URL
 function extract_problem_name() {
   local url="$1"
-  echo "$url" | sed -n 's/.*problems\/\(.*\)\/.*/\1/p'
+  echo "$url" | sed -n 's/.*\/problems\/\([^/]*\)\/.*/\1/p'
 }
 
 # Create the Swift code snippet
