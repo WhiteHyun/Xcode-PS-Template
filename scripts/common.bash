@@ -131,9 +131,15 @@ import XCTest
 
 final class $file_name: XCTestCase {
   private let problem = ${ps_platform}${question_id}()
+
   func testExample1() {
     let result = problem.solution(<#Insert Input#>)
-    XCTAssertTrue(result == <#Insert predicted value#>)
+    XCTAssertTrue(result == <#Insert predicted value#>, "Expected '<#Insert predicted value#>', but got '\(result)'")
+  }
+
+  func testExample2() {
+    let result = problem.solution(<#Insert Input#>)
+    XCTAssertTrue(result == <#Insert predicted value#>, "Expected '<#Insert predicted value#>', but got '\(result)'")
   }
 }
 
